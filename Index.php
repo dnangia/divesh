@@ -32,6 +32,36 @@
  </body>
 </html>
 
+<div id="apicrudModal" class="modal fade" role="dialog">
+ <div class="modal-dialog">
+  <div class="modal-content">
+   <form method="post" id="api_crud_form">
+    <div class="modal-header">
+           <button type="button" class="close" data-dismiss="modal">&times;</button>
+           <h4 class="modal-title">Add Data</h4>
+         </div>
+         <div class="modal-body">
+          <div class="form-group">
+            <label>Enter First Name</label>
+            <input type="text" name="first_name" id="first_name" class="form-control" />
+           </div>
+           <div class="form-group">
+            <label>Enter Last Name</label>
+            <input type="text" name="last_name" id="last_name" class="form-control" />
+           </div>
+       </div>
+       <div class="modal-footer">
+        <input type="hidden" name="hidden_id" id="hidden_id" />
+        <input type="hidden" name="action" id="action" value="insert" />
+        <input type="submit" name="button_action" id="button_action" class="btn btn-info" value="Insert" />
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+         </div>
+   </form>
+  </div>
+   </div>
+</div>
+
+
 <script type="text/javascript">
 $(document).ready(function(){
 
@@ -47,4 +77,47 @@ $(document).ready(function(){
    }
   })
  }
+
+ $('#add_button').click(function(){
+  $('#action').val('insert');
+  $('#button_action').val('Insert');
+  $('.modal-title').text('Add Data');
+  $('#apicrudModal').modal('show');
+ });
+
+ $('#api_crud_form').on('submit', function(event){
+  event.preventDefault();
+  if($('#first_name').val() == '')
+  {
+   alert("Enter First Name");
+  }
+  else if($('#last_name').val() == '')
+  {
+   alert("Enter Last Name");
+  }
+  else
+  {
+   var form_data = $(this).serialize();
+   $.ajax({
+    url:"action.php",
+    method:"POST",
+    data:form_data,
+    success:function(data)
+    {
+     fetch_data();
+     $('#api_crud_form')[0].reset();
+     $('#apicrudModal').modal('hide');
+     if(data == 'insert')
+     {
+      alert("Data Inserted using PHP API");
+     }
+     if(data == 'update')
+     {
+      alert("Data Updated using PHP API");
+     }
+    }
+   });
+  }
+ });
+
 </script>
